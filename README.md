@@ -7,4 +7,12 @@ It searches construction bid boards for projects that suit each client, filters 
 - [`docs/BRIEF.md`](docs/BRIEF.md): the working brief, with notes on what is and isn't feasible
 - [`docs/DECISIONS.md`](docs/DECISIONS.md): open questions and decisions waiting for Ben and Pedro
 
-Status: **Phase 0 (intake and decisions).** No code yet.
+- [`docs/SETUP.md`](docs/SETUP.md): Cloudflare setup steps (free plan)
+
+Status: **Phase 0 → 1.** D1 database created. The read-only hub and scoring engine are built and tested, waiting for Ben to deploy them and turn on Access.
+
+```
+npm install
+npm test          # scoring rules vs Ben's yes/no examples
+npm run dev       # local hub (returns 503 until Access vars are set)
+```

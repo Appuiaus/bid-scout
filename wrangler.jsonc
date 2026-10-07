@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bid-scout",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  // Serve ONLY on the *.workers.dev address: no routes, no custom domain,
+  // so Ben's existing zone and DNS are never touched.
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bid-scout-db",
+      "database_id": "a38b7aed-16f8-4c88-96a4-e18b3634141e",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // Filled in after Cloudflare Access is switched on (see docs/SETUP.md).
+    // Until both are set, every page returns 503: the hub fails closed.
+    "ACCESS_TEAM_DOMAIN": "",
+    "ACCESS_AUD": ""
+  }
+  // No cron triggers yet: Phase 1 has no live board. Free plan allows 5 per account.
+}
