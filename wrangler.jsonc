@@ -15,12 +15,10 @@
       "migrations_dir": "migrations"
     }
   ],
-  "vars": {
-    // Filled in after Cloudflare Access is switched on (see docs/SETUP.md).
-    // Until both are set, every page returns 503: the hub fails closed.
-    "ACCESS_TEAM_DOMAIN": "",
-    "ACCESS_AUD": ""
-  },
+  // ACCESS_TEAM_DOMAIN and ACCESS_AUD are set in the dashboard (Settings ->
+  // Variables and Secrets), not here: keep_vars stops each deploy from wiping
+  // them. Until both are set, every page returns 503 (the hub fails closed).
+  "keep_vars": true,
   // One daily run at 12:00 UTC = 8am US Eastern (EDT) / 10pm Brisbane.
   // That's one of the 5 cron triggers the free plan allows per account.
   // SAM.gov key with no role = 10 calls/day; each run uses one call per NAICS code (5).
