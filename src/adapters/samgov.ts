@@ -3,6 +3,7 @@
 // make ONE call per NAICS code per run, and the board config sets the codes.
 
 import type { Adapter, AdapterContext, NormalizedListing } from "./types";
+import { stateFromText, stateFromZip } from "./usstate";
 
 const DEFAULT_ENDPOINT = "https://api.sam.gov/opportunities/v2/search";
 
@@ -32,6 +33,8 @@ interface SamNotice {
   placeOfPerformance?: {
     city?: { name?: string };
     state?: { code?: string };
+    zip?: string;
+    streetAddress?: string;
   } | null;
   uiLink?: string;
   resourceLinks?: string[] | null;
@@ -46,14 +49,24 @@ export function mapNotice(n: SamNotice): NormalizedListing | null {
   if (!BIDDABLE_TYPES.includes(type)) return null;
   if (n.active && n.active.toLowerCase() === "no") return null;
   const amount = n.award?.amount != null ? Number(n.award.amount) : NaN;
+  // About half of real notices leave placeOfPerformance.state empty. Fall back
+  // to the job's ZIP code, address or title. Never use officeAddress: the
+  // contracting office is often hundreds of miles from the site.
+  const pop = n.placeOfPerformance ?? {};
+  let state = pop.state?.code || null;
+  let stateNote = "";
+  if (!state) {
+    state = stateFromZip(pop.zip) ?? stateFromText(pop.streetAddress) ?? stateFromText(n.title);
+    if (state) stateNote = "state inferred from job address/title";
+  }
   return {
     source_reference: n.noticeId,
     title: n.title,
     // The full description needs a second API call per notice (costs quota),
     // so Phase 1 scores on title + agency + NAICS tags only.
-    description: [n.fullParentPathName, n.solicitationNumber, n.type].filter(Boolean).join(" · ") || null,
+    description: [n.fullParentPathName, n.solicitationNumber, n.type, stateNote].filter(Boolean).join(" · ") || null,
     city: n.placeOfPerformance?.city?.name ?? null,
-    state: n.placeOfPerformance?.state?.code ?? null,
+    state,
     lat: null,
     lng: null,
     project_value: Number.isFinite(amount) && amount > 0 ? amount : null,
