@@ -64,3 +64,34 @@ describe("SAM.gov mapping", () => {
       .toBe(dedupeKey({ title: "SITEWORK GRADING PHASE 2", state: "TX" }));
   });
 });
+
+describe("NAICS 236220 (commercial building)", () => {
+  const client = {
+    client_id: "c", work_types: ["grading", "excavation"], states: ["TX"], base_lat: null, base_lng: null,
+    radius_miles: null, value_min: null, value_max: null, include_unvalued_listings: true,
+    positive_markers: ["sitework"], negative_markers: ["interior renovation"],
+  };
+  const n236 = { ...notice, naicsCode: "236220", responseDeadLine: "2099-01-01T00:00:00Z" };
+
+  it("is in the default search set", async () => {
+    const urls: string[] = [];
+    const f = (async (u: string) => { urls.push(u); return new Response('{"opportunitiesData":[]}'); }) as unknown as typeof fetch;
+    const board = { board_id: "samgov", board_name: "SAM", access_type: "api", endpoint: null, search_parameter_mapping: "{}", enabled: 1 };
+    await samgov.fetchListings({ board, params: {}, secrets: { SAM_API_KEY: "k" }, now: new Date(), fetch: f });
+    expect(urls.length).toBe(5);
+    expect(urls.some((u) => u.includes("ncode=236220"))).toBe(true);
+  });
+
+  it("vertical-only building stays below the surface threshold", async () => {
+    const { scoreListing } = await import("../src/scoring");
+    const l = mapNotice({ ...n236, title: "Construct New Administration Building" })!;
+    expect(l.work_type_tags).toEqual([]);
+    expect(scoreListing(client, l).fit_score!).toBeLessThanOrEqual(35);
+  });
+
+  it("building with sitework in its own text still scores well", async () => {
+    const { scoreListing } = await import("../src/scoring");
+    const l = mapNotice({ ...n236, title: "New Reserve Center including sitework and grading" })!;
+    expect(scoreListing(client, l).fit_score!).toBeGreaterThanOrEqual(70);
+  });
+});

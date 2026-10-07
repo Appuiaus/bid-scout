@@ -14,6 +14,10 @@ export const NAICS_TAGS: Record<string, string[]> = {
   "237310": ["roadway", "paving"],
   "237110": ["site utilities", "water main", "sewer"],
   "237990": ["earthwork"],
+  // Commercial building: much federal sitework is filed here, but so is pure
+  // vertical work. No implied tags, so a listing only scores well when its own
+  // text shows earthwork (otherwise the no-earthwork cap keeps it below 35).
+  "236220": [],
 };
 
 // Notice types that are an actual (or upcoming) chance to bid.

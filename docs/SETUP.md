@@ -9,7 +9,7 @@ Everything below is **new and separate**. Nothing touches Ben's existing domain,
 1. Sign in at **sam.gov** (it uses a Login.gov account; create one if needed). Use a business email, not a personal one, if possible.
 2. Go to **Profile → Account Details → Public API Key → Request API Key**. Copy the key.
 3. Don't paste it into chat or email. Store it as a Worker **secret** after step 1: **Workers & Pages → bid-scout → Settings → Variables and Secrets → Add → type *Secret*, name `SAM_API_KEY`**.
-4. Quota: a key with no SAM "role" gets **10 calls/day**. Each daily run uses 4 (one per work-type code). Keys expire every 90 days; SAM.gov emails a reminder.
+4. Quota: a key with no SAM "role" gets **10 calls/day**. Each daily run uses 5 (one per work-type code). Keys expire every 90 days; SAM.gov emails a reminder.
 
 ## Ben: step 1, deploy the Worker (about 5 min, one time)
 Pick one of these.
@@ -33,7 +33,7 @@ At this point the page shows *"Cloudflare Access is not configured yet"*. That's
 4. Claude adds them to `wrangler.jsonc` and pushes. If you used option A, it redeploys on its own. Then open the URL, enter your email, get the code, and you're in.
 
 ## What happens after setup
-- Every day at **12:00 UTC** (8am US Eastern, 10pm Brisbane), the Worker searches SAM.gov for the last 3 days of notices under site prep (238910), highway/street (237310), water/sewer line (237110) and other heavy civil (237990). It scores them for each client whose `boards_to_search` includes `samgov`.
+- Every day at **12:00 UTC** (8am US Eastern, 10pm Brisbane), the Worker searches SAM.gov for the last 3 days of notices under site prep (238910), highway/street (237310), water/sewer line (237110), other heavy civil (237990) and commercial building (236220, kept only when the listing itself shows earthwork). It scores them for each client whose `boards_to_search` includes `samgov`.
 - The hub's home page lists every run. A failed run (bad key, quota used up) shows in red there and doesn't affect anything else.
 
 ## Free plan limits to watch
