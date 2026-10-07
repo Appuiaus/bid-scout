@@ -130,10 +130,14 @@ function recencyFit(l: Listing, now: Date): { fit: number | null; note: string }
 }
 
 export function scoreListing(c: ClientProfile, l: Listing, weights: Weights = DEFAULT_WEIGHTS, now = new Date()): ScoreResult {
-  const text = [l.title, l.description ?? "", l.work_type_tags.join(" ")].join(" ");
-  const matched_positive = findTerms(text, c.positive_markers);
-  const matched_negative = findTerms(text, c.negative_markers);
-  const earthwork = findTerms(text, EARTHWORK_TERMS);
+  // Markers are judged on the listing's own words only. Tags inferred from a
+  // board's category code (e.g. NAICS) help trade matching but must not
+  // override what the listing itself says ("interior renovation" stays negative).
+  const ownText = [l.title, l.description ?? ""].join(" ");
+  const text = [ownText, l.work_type_tags.join(" ")].join(" ");
+  const matched_positive = findTerms(ownText, c.positive_markers);
+  const matched_negative = findTerms(ownText, c.negative_markers);
+  const earthwork = findTerms(ownText, EARTHWORK_TERMS);
   const confidence_flag: "normal" | "low" = l.project_value == null && !l.files_present ? "low" : "normal";
 
   const drop = (reason: string): ScoreResult => ({

@@ -20,6 +20,10 @@
     // Until both are set, every page returns 503: the hub fails closed.
     "ACCESS_TEAM_DOMAIN": "",
     "ACCESS_AUD": ""
-  }
-  // No cron triggers yet: Phase 1 has no live board. Free plan allows 5 per account.
+  },
+  // One daily run at 12:00 UTC = 8am US Eastern (EDT) / 10pm Brisbane.
+  // That's one of the 5 cron triggers the free plan allows per account.
+  // SAM.gov key with no role = 10 calls/day; each run uses one call per NAICS code (4).
+  "triggers": { "crons": ["0 12 * * *"] }
+  // Secret (set in the dashboard, never in this file): SAM_API_KEY
 }

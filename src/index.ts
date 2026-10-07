@@ -3,10 +3,9 @@
 // Cloudflare Access token.
 
 import { verifyAccess, type AccessEnv } from "./access";
+import { runAllBoards, type IngestEnv } from "./ingest";
 
-interface Env extends AccessEnv {
-  DB: D1Database;
-}
+interface Env extends AccessEnv, IngestEnv {}
 
 const esc = (s: unknown) =>
   String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -105,5 +104,10 @@ export default {
     const m = url.pathname.match(/^\/c\/([^/]+)$/);
     if (m) return clientQueue(env, auth.email, decodeURIComponent(m[1]), url.searchParams.get("dropped") === "1");
     return new Response("Not found", { status: 404 });
+  },
+
+  // Cron Trigger: pull from enabled boards and score. Reads boards, writes only to D1.
+  async scheduled(_event: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+    ctx.waitUntil(runAllBoards(env));
   },
 } satisfies ExportedHandler<Env>;

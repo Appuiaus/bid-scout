@@ -3,7 +3,7 @@
 Answer inline or in chat. ☐ = open, ☑ = decided.
 
 ## A. Housekeeping
-- ☐ **Q1. Repo name.** I can't rename the repo from this session because the GitHub tools here don't support it. Rename it in GitHub → Settings → General → Repository name. Suggestions: `sitework-bid-finder`, `bid-scout`, `earthworks-bid-scout`, `bidboard-hub`. GitHub redirects the old URL automatically.
+- ☑ **Q1. Repo name.** **Renamed to `Appuiaus/bid-scout`.** Original note: I can't rename the repo from this session because the GitHub tools here don't support it. Rename it in GitHub → Settings → General → Repository name. Suggestions: `sitework-bid-finder`, `bid-scout`, `earthworks-bid-scout`, `bidboard-hub`. GitHub redirects the old URL automatically.
 
 ## B. Hosting
 - ☑ **Q2. Where does the hub run?** **Decided 2026-10-07: Cloudflare Workers + D1 + Access, free plan. Review if limits bite.** Original options: (a) Cloudflare Workers + D1 + Access, serverless with nothing to keep switched on *(recommended)*, or (b) a machine Ben owns, exposed through a new dedicated Cloudflare Tunnel. If (b), which machine?
@@ -15,7 +15,7 @@ Answer inline or in chat. ☐ = open, ☑ = decided.
 - ☐ **Q6. The full board list.** The five main boards (BuildingConnected and PlanHub, plus which three others?) and every niche board, each with its URL, **who owns the account** (Ben, the boss or the client), whether it uses 2FA (SMS, app or email) and whether it sends email alerts.
 - ☐ **Q7. BuildingConnected.** Do any of the accounts have **Bid Board Pro**? The API only shows invitations *to that account*, so which account receives the invites that matter: the business's or each client's? Will the boss ask the Autodesk account manager to enable API access?
 - ☐ **Q8. PlanHub API.** Is it worth asking for a quote? (It's an annual enterprise licence.)
-- ☐ **Q9. Public procurement portals.** May we use SAM.gov (free official API) and state DOT and county portals as a sanctioned source, and possibly as the Phase 1 board?
+- ☑ **Q9. Public procurement portals.** **Decided 2026-10-07: Phase 1 = SAM.gov API + one state portal. The adapter for the state depends on the pilot client's state.** Original question: May we use SAM.gov (free official API) and state DOT and county portals as a sanctioned source, and possibly as the Phase 1 board?
 - ☐ **Q10. Boards with no API.** Default rule: no automated logged-in access. Use email alerts or Ben's CSV exports instead, and decide case by case after reading each board's terms. Agree?
 
 ## D. Clients and scoring

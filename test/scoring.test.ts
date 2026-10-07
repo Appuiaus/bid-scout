@@ -90,3 +90,14 @@ describe("explainability", () => {
     }
   });
 });
+
+describe("board category tags", () => {
+  it("do not rescue a listing whose own text is an interior renovation", () => {
+    const r = scoreListing(client, { ...base, title: "Interior renovation Building 12", work_type_tags: ["excavation", "grading"] }, undefined, now);
+    expect(r.deterministic_pass).toBe(false);
+  });
+  it("still count toward trade match", () => {
+    const r = scoreListing(client, { ...base, title: "Reserve center project", work_type_tags: ["grading", "excavation"] }, undefined, now);
+    expect(r.components!.trade.points).toBeGreaterThan(0);
+  });
+});
